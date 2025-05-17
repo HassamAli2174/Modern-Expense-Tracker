@@ -15,6 +15,7 @@ class _NewExpenseState extends State<NewExpense> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
   DateTime? _selectedDate;
+  Category _selectedValue = Category.leisure;
 
   void _presentDatePicker() async {
     final now = DateTime.now();
@@ -64,6 +65,8 @@ class _NewExpenseState extends State<NewExpense> {
               ),
               Expanded(
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                       _selectedDate == null
@@ -79,18 +82,41 @@ class _NewExpenseState extends State<NewExpense> {
               ),
             ],
           ),
+          SizedBox(height: 10),
           Row(
             children: [
+              DropdownButton(
+                value: _selectedValue,
+                items:
+                    Category.values
+                        .map(
+                          (category) => DropdownMenuItem(
+                            value: category,
+                            child: Text(category.name.toUpperCase()),
+                          ),
+                        )
+                        .toList(),
+                onChanged: (value) {
+                  if (value == null) {
+                    return;
+                  }
+                  setState(() {
+                    _selectedValue = value;
+                  });
+                  print(_selectedValue);
+                },
+              ),
+              const Spacer(),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
               ElevatedButton(
                 onPressed: () {
                   print(_titleController.text);
                   print(_amountController.value);
                 },
                 child: const Text('Save Expense'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
               ),
             ],
           ),
